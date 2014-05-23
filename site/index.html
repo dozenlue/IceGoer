@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Ice Goer - Test Page</title>
+    <link rel="stylesheet" href="../dojo/dijit/themes/claro/claro.css">
+    <script>
+      var dojoConfig = {
+        async: true,
+        packages: [
+          {
+            name: "engine",
+            location: location.pathname.replace(/\/[^/]*$/, '') + '/engine'
+          },
+          {
+            name: "view",
+            location: location.pathname.replace(/\/[^/]*$/, '') + '/view'
+          }
+        ]
+      };
+    </script>
+    <script src="../dojo/dojo/dojo.js"></script>
+
+    <script>
+      var stoneToPlace = 1;
+      require(
+        [
+          'dojo/parser',
+          'dojo/on',
+          'dojo/ready',
+          'dijit/registry',
+          'engine/Board',
+          'view/BoardView'
+        ], function (parser, on, ready, registry, board, boardView) {
+          // The board model
+          var theBoard = new board();
+          var theView = null;
+
+          ready(function()
+          {
+            parser.parse().then(function(instances) {
+              theView = registry.byId("boardView");
+              on(theView, "CrossClicked", onCrossClicked)
+              theView.board = theBoard;
+              theView.updateView();
+            });
+          });
+
+          function onCrossClicked(ptClicked)
+          {
+            console.debug("Cross clicked: " + ptClicked.boardKey);
+            if (stoneToPlace == 1)
+              theBoard.placeBlack(ptClicked);
+            else if (stoneToPlace == 2)
+              theBoard.placeWhite(ptClicked);
+
+            if (theView)
+              theView.updateView();
+          }
+        }
+      );
+    </script>
+  </head>
+  <body class="claro">
+    <img id="boardBkgrdImg" src="resource/board/1.jpg" style="display:none"></img>
+    <img id="whiteStoneImg" src="resource/stone/white.jpg" style="display:none"></img>
+    <img id="blackStoneImg" src="resource/stone/black.jpg" style="display:none"></img>
+
+    <div id="boardView" data-dojo-type="view/BoardView" class="someClass"
+      data-dojo-props="backGround: boardBkgrdImg,
+        whiteStone: whiteStoneImg,
+        blackStone: blackStoneImg"
+    ></div>
+
+    <button data-dojo-type="dijit/form/Button">
+      <span>Redraw</span>
+      <script type="dojo/on" data-dojo-event="click">
+        var registry = require("dijit/registry");
+        registry.byId("boardView").updateView();
+      </script>
+    </button>
+
+    <b>Place:</b>
+    <select id="selectPlace" name="selectPlace" data-dojo-type="dijit/form/Select">
+      <option value="1" selected="selected">black stone</option>
+      <option value="2">white stone</option>
+      <script type="dojo/on" data-dojo-event="change">
+        stoneToPlace = this.get("value");
+      </script>
+    </select>
+  </body>
+</html>
