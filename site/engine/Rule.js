@@ -35,8 +35,47 @@ define
           }
         },
 
-        _tryCapture: function(board, point, stone)
+        _tryCapture: function(board, point, stonePlaced, stoneToCapture)
         {
+          var captured = [];
+          board.forEachAdjacentPoint(this, point, function(point, stone)
+          {
+            if (stone === stoneToCapture)
+            {
+              
+            }
+	  });
+        },
+
+        _checkLife: function(board, pointToCheck, stoneToCheck, checked)
+        {
+          if (0 >= checked.indexOf(pointToCheck.boardKey))
+            return false;
+
+          var hasLife = false;
+          board.forEachAdjacentPoint(this, pointToCheck, function(point, stone)
+          {
+            if (!stone)
+            {
+              hasLife = true;
+              return false;
+            }
+
+            if (stone === stoneToCheck)
+            {
+              checked.push(point);
+              hasLife = this._checkLife(this, point, stone, checked);
+
+              if (hasLife)
+                return false; // no need to continue check
+            }
+            else
+            {
+              return false;
+            }
+	  });
+
+          return hasLife;
         },
 
         _mergeCaptured: function(captured, newCaptured)

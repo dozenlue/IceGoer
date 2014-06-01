@@ -23,19 +23,19 @@ define (
           this._marks = {};
         },
 
-	      // Test stone placed on given point.
-	      // 0 - no stone
-	      // 1 - black stone
-	      // 2 - white stone
-	      stoneAt: function(/* Point */point)
-	      {
-	        if (this._stones && this._stones[point.boardKey])
-	        {
-	          return this._stones[point.boardKey];
-	        }
+        // Test stone placed on given point.
+        // 0 - no stone
+        // 1 - black stone
+        // 2 - white stone
+        stoneAt: function(/* Point */point)
+        {
+          if (this._stones && this._stones[point.boardKey])
+          {
+            return this._stones[point.boardKey];
+          }
 
-	        return 0;
-	      },
+          return 0;
+        },
 
         forEachStone: function(context, callbackFunc)
         {

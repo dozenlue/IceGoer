@@ -18,8 +18,8 @@ define (
       fromXY: function(x, y)
       {
         var point = new pointClass();
-        point.x = x;
-        point.y = y;
+        point.x = Math.round(x);
+        point.y = Math.round(y);
 
         // e.g. {x: 4, y: 0} converts to "ea"
         point.boardKey = String.fromCharCode(97+x) + String.fromCharCode(97+y);
