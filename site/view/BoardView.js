@@ -21,9 +21,11 @@ define([
     // engine/Board - the model
     board: null,
 
-    backGround: null,
-    blackStone: null,
-    whiteStone: null,
+    // attach points
+    canvasNode: null,
+    boardBkgrdImg: null,
+    blackStomeImg: null,
+    whiteStoneImg: null,
 
     _onClick: function(e)
     {
@@ -73,16 +75,16 @@ define([
 
     _drawBackground: function(context)
     {
-      context.drawImage(this.backGround, 0, 0, this.boardWidth, this.boardHeight);
+      context.drawImage(this.boardBkgrdImg, 0, 0, this.boardWidth, this.boardHeight);
     },
 
     _drawStone: function(context, stone, x, y)
     {
       var stoneImg = null;
       if (stone === 1)
-        stoneImg = this.blackStone;
+        stoneImg = this.blackStoneImg;
       else if (stone === 2)
-        stoneImg = this.whiteStone;
+        stoneImg = this.whiteStoneImg;
 
       context.save();
 
