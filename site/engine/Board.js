@@ -53,6 +53,82 @@ define (
           }
         },
 
+        // If there is a stone placed on given point, return an array that
+        // contains all adjacent stones' board key.
+        // If there is no stone placed on given point, return an empty array 
+        groupAt: function(/* Point */point)
+        {
+          var group = [];
+          var stone = this._stones[point. boardKey];
+          if (stone)
+          {
+            var found = [point.boardKey];
+            var newFound = [];
+
+            while (found.length > 0)
+            {
+              group = group.concat(found);
+
+              this.forEachAdjacentPoint(this, found, function(foundStone, key)
+              {
+                if (foundStone === stone
+                    && 0 > group.indexOf(key)
+                    && 0 > found.indexOf(key)
+                    && 0 > newFound.indexOf(key))
+                {
+                  newFound.push(key);
+                }
+              });
+
+              found = newFound;
+              newFound = [];
+            }
+          }
+
+          return group;
+        },
+
+        hasLive: function(/* Point */point)
+        {
+          var result = false;
+          var stone = this._stones[point.boardKey];
+          if (stone)
+          {
+            var tested = [point.boardKey];
+            var testing = [];
+
+            while(tested.length > 0)
+            {
+              this.forEachAdjacentPoint(this, tested, function(foundStone, key)
+              {
+                if (!foundStone)
+                {
+                  // has live, break
+                  result = true;
+                  return true;
+                }
+
+                if (foundStone === stone
+                    && 0 > tested.indexOf(key)
+                    && 0 > testing.indexOf(key))
+                {
+                  testing.push(key);
+                }
+              });
+
+              if (!result)
+              {
+                tested = testing;
+                testing = [];
+              }
+              else
+                break;
+            }
+          }
+
+          return result;
+        },
+
         // Give a set of points, call callback function for each adjacent point
         // callbackFunc - function(stone, key)
         // returns 0|false|null|undefined to continue, true to stop.
@@ -106,6 +182,11 @@ define (
             if (callbackFunc.call(context, this._stones[i], adjPoints[i]))
               break;
           }
+        },
+
+        tryPlace: function(/* Point */point, /* 1 or 2 */stone)
+        {
+          
         },
 
 	// Place a stone on give point.
