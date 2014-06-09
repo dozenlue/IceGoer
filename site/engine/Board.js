@@ -180,11 +180,12 @@ define (
                   && 0 > arrayUtil.indexOf(adjPoints, downPoint.boardKey))
                 adjPoints.push(downPoint.boardKey);
             }
-          });
+          }, this);
 
           for (var i in adjPoints)
           {
-            if (callbackFunc.call(context, this._stones[i], adjPoints[i]))
+            var key = adjPoints[i];
+            if (callbackFunc.call(context, this._stones[key], key))
               break;
           }
         },
@@ -208,14 +209,14 @@ define (
 
           // Test if this move can capture opponent's stone
           var toTest = [point.boardKey];
-          this.forEachAdjacentPoint(this, toTest, function(pointFound, stoneFound)
+          this.forEachAdjacentPoint(this, toTest, function(stoneFound, pointFound)
           {
             if (stoneFound && stoneFound != stone)
             {
               if (!this.hasLive(pointFound))
               {
                 canCapture = true;
-                var captured = this.groupAt(pointFound);
+                var captured = this.groupAt(Point.fromKey(pointFound));
                 this.removeStones(captured);
               }
             }
@@ -252,28 +253,14 @@ define (
 	    return true;
 	  }
 
-	  if (0 !== this.stoneAt(point))
-	    return false;
+          var newStones = this.tryPlace(point, stone);
+          if (!newStones)
+            return false;
 
-	  if (this.rule)
-	  {
-	    var testResult = this.rule.testMove(this, point, stone);
-            if (testResult.isValid)
-	    {
-              this._stones[point.boardKey] = stone;
-              if (testResult.captured)
-              {
-		for (var i in testResult.captured)
-		  this._stones[testResult.captured[i]] = 0;
-              }
+          this._history.push(this._stones);
+          this._stones = newStones;
 
-              return true;
-	    }
-            else
-              return false;
-	  }
-
-	  return this.place(point, stone, true);
+          return true;
 	},
 
 	placeBlack: function(/* Point */point, /* Boolean */force)
@@ -295,6 +282,17 @@ define (
 	{
           this._stones[point.boardKey] = 0;
 	},
+
+        removeStones: function(/* Array of Board Keys */points)
+        {
+          if (points)
+          {
+            for (var i in points)
+            {
+              this._stones[points[i]] = 0;
+            }
+          }
+        },
 
 	removeMark: function(/* Point */point)
 	{

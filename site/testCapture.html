@@ -43,10 +43,10 @@
               on(theView, "CrossClicked", onCrossClicked)
               theView.board = theBoard;
 
-              theBoard.placeBlack(point.fromXY(4,4));
-              theBoard.placeBlack(point.fromXY(3,5));
-              theBoard.placeBlack(point.fromXY(5,5));
-              theBoard.placeWhite(point.fromXY(4,5));
+              theBoard.placeBlack(point.fromXY(4,4), true);
+              theBoard.placeBlack(point.fromXY(3,5), true);
+              theBoard.placeBlack(point.fromXY(5,5), true);
+              theBoard.placeWhite(point.fromXY(4,5), true);
 
               theView.updateView();
             });
