@@ -1,11 +1,12 @@
 define (
   [
     "dojo/_base/declare",
+    "dojo/_base/lang",
     "dojo/_base/array",
     "engine/BaseObject",
     "engine/Point",
   ],
-  function (declare, arrayUtil, BaseObject, Point)
+  function (declare, lang, arrayUtil, BaseObject, Point)
   {
     var boardClass = declare(
       "icegoer.engine.Board",
@@ -17,12 +18,16 @@ define (
         _stones: null,
         _marks: null,
 
+        // An array of this._stones
+        _history: null,
+
         constructor: function(args)
         {
           declare.safeMixin(this, args);
 
           this._stones = {};
           this._marks = {};
+          this._history = [];
         },
 
         // Test stone placed on given point.
@@ -55,7 +60,7 @@ define (
 
         // If there is a stone placed on given point, return an array that
         // contains all adjacent stones' board key.
-        // If there is no stone placed on given point, return an empty array 
+        // If there is no stone placed on given point, return an empty array
         groupAt: function(/* Point */point)
         {
           var group = [];
@@ -184,15 +189,62 @@ define (
           }
         },
 
+        // on success, return stone map for placed result
+        // on fail, return null
+        // this function doesn't change current this._stones
         tryPlace: function(/* Point */point, /* 1 or 2 */stone)
         {
-          
+          // Test if there is already a stone
+          if (this.stoneAt(point))
+          {
+            return null;
+          }
+
+          var canCapture = false;
+          var newStones = lang.clone(this._stones);
+          var savedStones = this._stones;
+          this._stones = newStones;
+          this.place(point, stone, true);
+
+          // Test if this move can capture opponent's stone
+          var toTest = [point.boardKey];
+          this.forEachAdjacentPoint(this, toTest, function(pointFound, stoneFound)
+          {
+            if (stoneFound && stoneFound != stone)
+            {
+              if (!this.hasLive(pointFound))
+              {
+                canCapture = true;
+                var captured = this.groupAt(pointFound);
+                this.removeStones(captured);
+              }
+            }
+          });
+
+          if (canCapture)
+          {
+            this._stones = savedStones;
+            return newStones;
+          }
+
+          // Test if this move doesn't suicide (captured self)
+          var valid = this.hasLive(point);
+
+          this._stones = savedStones;
+          if (valid)
+          {
+            return newStones;
+          }
+          else
+          {
+            return null;
+          }
         },
 
-	// Place a stone on give point.
-	// It may fail it force is set to false, due to validation error.
-	// In case of succes, it returns true, false otherwise.
-	place: function(/* Point */point, /* 0, 1 or 2 */stone, /* Boolean */force)
+     	 // Place a stone on give point.
+        // It may fail it force is set to false, due to validation error.
+        // In case of succes, it returns true, false otherwise.
+        place: function(/* Point */point, /* 0, 1 or 2 */stone, /* Boolean */force)
         {
 	  if (force)
 	  {
