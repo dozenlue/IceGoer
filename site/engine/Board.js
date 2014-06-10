@@ -54,7 +54,8 @@ define (
         {
           for (var i in this._stones)
           {
-            callbackFunc.call(context, this._stones[i], i);
+            if (this._stones[i])
+              callbackFunc.call(context, this._stones[i], i);
           }
         },
 
@@ -213,7 +214,7 @@ define (
           {
             if (stoneFound && stoneFound != stone)
             {
-              if (!this.hasLive(pointFound))
+              if (!this.hasLive(Point.fromKey(pointFound)))
               {
                 canCapture = true;
                 var captured = this.groupAt(Point.fromKey(pointFound));

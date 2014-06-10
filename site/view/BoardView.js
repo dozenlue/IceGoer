@@ -1,11 +1,12 @@
 define([
   "dojo/_base/declare",
+  "require",
   "engine/Point",
   "view/Cross",
   "dijit/_WidgetBase",
   "dijit/_TemplatedMixin",
   "dojo/text!./templates/BoardView.html"
-], function(declare, point, cross, _WidgetBase, _TemplatedMixin, template) {
+], function(declare, require, point, cross, _WidgetBase, _TemplatedMixin, template) {
 
   return declare([_WidgetBase, _TemplatedMixin], {
     templateString: template,
@@ -21,10 +22,15 @@ define([
     // engine/Board - the model
     board: null,
 
+    // resources
+    boardImgUrl: require.toUrl("./resource/board/1.jpg"),
+    whiteStoneImgUrl: require.toUrl("./resource/stone/white.jpg"),
+    blackStoneImgUrl: require.toUrl("./resource/stone/black.jpg"),
+
     // attach points
     canvasNode: null,
     boardBkgrdImg: null,
-    blackStomeImg: null,
+    blackStoneImg: null,
     whiteStoneImg: null,
 
     _onClick: function(e)

@@ -3,23 +3,23 @@
   <head>
     <meta charset="utf-8">
     <title>Ice Goer - Test Capture</title>
-    <link rel="stylesheet" href="../dojo/dijit/themes/claro/claro.css">
+    <link rel="stylesheet" href="../../dojo/dijit/themes/claro/claro.css">
     <script>
       var dojoConfig = {
         async: true,
         packages: [
           {
             name: "engine",
-            location: location.pathname.replace(/\/[^/]*$/, '') + '/engine'
+            location: '../../icegoer/engine'
           },
           {
             name: "view",
-            location: location.pathname.replace(/\/[^/]*$/, '') + '/view'
+            location: '../../icegoer/view'
           }
         ]
       };
     </script>
-    <script src="../dojo/dojo/dojo.js"></script>
+    <script src="../../dojo/dojo/dojo.js"></script>
 
     <script>
       require(
@@ -43,10 +43,10 @@
               on(theView, "CrossClicked", onCrossClicked)
               theView.board = theBoard;
 
-              theBoard.placeBlack(point.fromXY(4,4), true);
-              theBoard.placeBlack(point.fromXY(3,5), true);
-              theBoard.placeBlack(point.fromXY(5,5), true);
-              theBoard.placeWhite(point.fromXY(4,5), true);
+              theBoard.placeBlack(point.fromXY(4,4));
+              theBoard.placeBlack(point.fromXY(3,5));
+              theBoard.placeBlack(point.fromXY(5,5));
+              theBoard.placeWhite(point.fromXY(4,5));
 
               theView.updateView();
             });
