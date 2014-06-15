@@ -100,11 +100,21 @@ define (
           var stone = this._stones[point.boardKey];
           if (stone)
           {
-            var tested = [point.boardKey];
-            var testing = [];
+            var tested = [];
+            var newFound = [point.boardKey];
 
-            while(tested.length > 0)
+            while(!result && newFound.length > 0)
             {
+              arrayUtil.forEach(newFound, function(item, index)
+              {
+                if (0 > arrayUtil.indexOf(tested, item))
+                {
+                  tested.push(item);
+                }
+              });
+
+              newFound = [];
+
               this.forEachAdjacentPoint(this, tested, function(foundStone, key)
               {
                 if (!foundStone)
@@ -116,19 +126,11 @@ define (
 
                 if (foundStone === stone
                     && 0 > tested.indexOf(key)
-                    && 0 > testing.indexOf(key))
+                    && 0 > newFound.indexOf(key))
                 {
-                  testing.push(key);
+                  newFound.push(key);
                 }
               });
-
-              if (!result)
-              {
-                tested = testing;
-                testing = [];
-              }
-              else
-                break;
             }
           }
 
