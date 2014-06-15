@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Ice Goer - Test Capture</title>
+    <link rel="stylesheet" href="../../dojo/dijit/themes/claro/claro.css">
+    <script>
+      var dojoConfig = {
+        async: true,
+        packages: [
+          {
+            name: "engine",
+            location: '../../icegoer/engine'
+          },
+          {
+            name: "view",
+            location: '../../icegoer/view'
+          }
+        ]
+      };
+    </script>
+    <script src="../../dojo/dojo/dojo.js"></script>
+
+    <script>
+      require(
+        [
+          'dojo/parser',
+          'dojo/on',
+          'dojo/ready',
+          'dijit/registry',
+          'engine/Board',
+          'engine/Point',
+          'view/BoardView'
+        ], function (parser, on, ready, registry, board, point, boardView) {
+          // The board model
+          var theBoard = new board();
+          var theView = null;
+
+          ready(function()
+          {
+            parser.parse().then(function(instances) {
+              theView = registry.byId("boardView");
+              on(theView, "CrossClicked", onCrossClicked)
+              theView.board = theBoard;
+
+              theBoard.placeBlack(point.fromXY(4,4));
+              theBoard.placeBlack(point.fromXY(3,5));
+              theBoard.placeBlack(point.fromXY(3,6));
+              theBoard.placeBlack(point.fromXY(5,5));
+              theBoard.placeBlack(point.fromXY(5,6));
+              theBoard.placeWhite(point.fromXY(4,5));
+              theBoard.placeWhite(point.fromXY(4,6));
+
+              theView.updateView();
+            });
+          });
+
+          function onCrossClicked(ptClicked)
+          {
+            console.debug(ptClicked);
+            theBoard.placeBlack(ptClicked);
+            theView.updateView();
+          }
+        }
+      );
+    </script>
+  </head>
+  <body class="claro">
+    <div id="boardView" data-dojo-type="view/BoardView" class="someClass"
+    ></div>
+
+    <button data-dojo-type="dijit/form/Button">
+      <span>Redraw</span>
+      <script type="dojo/on" data-dojo-event="click">
+        var registry = require("dijit/registry");
+        registry.byId("boardView").updateView();
+      </script>
+    </button>
+
+  </body>
+</html>
