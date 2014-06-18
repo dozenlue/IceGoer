@@ -72,6 +72,22 @@
       </script>
     </button>
 
+    <button data-dojo-type="dijit/form/Button">
+      <span>Backward</span>
+      <script type="dojo/on" data-dojo-event="click">
+        var registry = require("dijit/registry");
+        registry.byId("boardView").backward();
+      </script>
+    </button>
+
+    <button data-dojo-type="dijit/form/Button">
+      <span>Forward</span>
+      <script type="dojo/on" data-dojo-event="click">
+        var registry = require("dijit/registry");
+        registry.byId("boardView").forward();
+      </script>
+    </button>
+
     <b>Place:</b>
     <select id="selectPlace" name="selectPlace" data-dojo-type="dijit/form/Select">
       <option value="1" selected="selected">black stone</option>
