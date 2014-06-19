@@ -5,7 +5,7 @@ define (
   ],
   function (declare, arrayUtil)
   {
-    var boardClass = declare(
+    var historyClass = declare(
       "icegoer.engine.History",
       null,
       {
@@ -13,24 +13,54 @@ define (
         root: null,
 
         cursor: null,
+        last: null,
 
         constructor: function(args)
         {
           declare.safeMixin(this, args);
 
           this.cursor = this.root;
+          this.last = this.root;
+          while (this.last && this.last.next)
+          {
+            this.last = this.last.next;
+          }
         },
 
-        moveTo: function(/* Number */index)
+        forward: function(/* Number */delta)
         {
+          for (var i=0; i<delta; i++)
+          {
+            if (this.cursor && this.cursor.next)
+              this.cursor = this.cursor.next;
+            else
+              break;
+          }
+
+          if (this.cursor)
+            return this.cursor.item;
         },
 
-        offset: function(/* Number */delta)
+        back: function(/* Number */delta)
         {
+          for (var i=0; i<delta; i++)
+          {
+            if (this.cursor && this.cursor.prev)
+              this.cursor = this.cursor.prev;
+            else
+              break;
+          }
+
+          if (this.cursor)
+            return this.cursor.item;
         },
 
         push: function(item)
         {
+          var node = {item: item};
+          this.last.next = node;
+          node.prev = this.last;
+          this.last = node;
         },
 
         hasVariant: function()
@@ -42,6 +72,6 @@ define (
         }
       });
 
-    return boardClass;
+    return historyClass;
   }
 );
